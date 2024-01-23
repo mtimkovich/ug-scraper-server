@@ -3,7 +3,9 @@ package main
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"log"
+	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
@@ -31,6 +33,7 @@ func tabId(url string) (int64, error) {
 type TabOutput struct {
 	SongName   string
 	ArtistName string
+	Url        string
 	TabOut     string
 }
 
@@ -48,7 +51,7 @@ func fetchTab(url string) (TabOutput, error) {
 		return tabOutput, err
 	}
 
-	// Remove the syntax delimiters as a proof of concept
+	// Remove the syntax delimiters.
 	tabOut := strings.ReplaceAll(tab.Content, "[tab]", "")
 	tabOut = strings.ReplaceAll(tabOut, "[/tab]", "")
 	tabOut = strings.ReplaceAll(tabOut, "[ch]", "")
@@ -57,16 +60,28 @@ func fetchTab(url string) (TabOutput, error) {
 	tabOutput.SongName = tab.SongName
 	tabOutput.ArtistName = tab.ArtistName
 	tabOutput.TabOut = tabOut
+	tabOutput.Url = tab.URLWeb
 
 	return tabOutput, nil
 }
 
-func main() {
+func handler(w http.ResponseWriter, r *http.Request) {
 	url := "https://tabs.ultimate-guitar.com/tab/misc-traditional/the-parting-glass-chords-1147884"
 	tab, err := fetchTab(url)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, "Error fetching tab", 500)
 	}
 
-	fmt.Printf("%+v\n", tab)
+	tmpl := template.Must(template.ParseFiles("template.html"))
+	tmpl.Execute(w, tab)
+}
+
+func main() {
+	http.HandleFunc("/", handler)
+	port := ":8080"
+	fmt.Printf("Running on http://localhost%v\n", port)
+	err := http.ListenAndServe(port, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
