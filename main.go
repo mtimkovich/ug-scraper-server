@@ -33,17 +33,13 @@ func tabId(url string) (int64, error) {
 type TabOutput struct {
 	SongName   string
 	ArtistName string
-	Url        string
+	URL        string
 	TabOut     string
+	Error      string
 }
 
-func fetchTab(url string) (TabOutput, error) {
+func fetchTab(id int64) (TabOutput, error) {
 	tabOutput := TabOutput{}
-	id, err := tabId(url)
-
-	if err != nil {
-		return tabOutput, err
-	}
 
 	s := ultimateguitar.New()
 	tab, err := s.GetTabByID(id)
@@ -60,25 +56,40 @@ func fetchTab(url string) (TabOutput, error) {
 	tabOutput.SongName = tab.SongName
 	tabOutput.ArtistName = tab.ArtistName
 	tabOutput.TabOut = tabOut
-	tabOutput.Url = tab.URLWeb
+	tabOutput.URL = tab.URLWeb
 
 	return tabOutput, nil
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	url := "https://tabs.ultimate-guitar.com/tab/misc-traditional/the-parting-glass-chords-1147884"
-	tab, err := fetchTab(url)
-	if err != nil {
-		http.Error(w, "Error fetching tab", 500)
+	tmpl := template.Must(template.ParseFiles("template.html"))
+	data := TabOutput{}
+
+	path := r.URL.Path[len("/"):]
+	if path == "" {
+		tmpl.Execute(w, data)
+		return
 	}
 
-	tmpl := template.Must(template.ParseFiles("template.html"))
-	tmpl.Execute(w, tab)
+	id, err := tabId(path)
+	if err != nil {
+		data.Error = "Invalid UG URL"
+		tmpl.Execute(w, data)
+		return
+	}
+
+	// url := "https://tabs.ultimate-guitar.com/tab/misc-traditional/the-parting-glass-chords-1147884"
+	data, err = fetchTab(id)
+	if err != nil || data.TabOut == "" {
+		data.Error = "Error fetching tab"
+	}
+
+	tmpl.Execute(w, data)
 }
 
 func main() {
 	http.HandleFunc("/", handler)
-	port := ":8080"
+	port := ":3000"
 	fmt.Printf("Running on http://localhost%v\n", port)
 	err := http.ListenAndServe(port, nil)
 	if err != nil {

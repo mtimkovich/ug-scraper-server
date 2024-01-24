@@ -1,12 +1,16 @@
 <html>
   <body>
-	<input type="text" placeholder="Ultimate Guitar tab URL" size="50"></input>
+	<input type="text" placeholder="Ultimate Guitar tab URL" size="50" value="{{.URL}}"></input>
 	<button id="go">Go</button>
 
-    <h1>{{.SongName}} - {{.ArtistName}}</h1>
+	<div style="color: red">{{.Error}}</div>
 
-    <pre>
-    {{.TabOut}}
-    </pre>
+	{{if .TabOut}}
+	<h1>{{.SongName}} - {{.ArtistName}}</h1>
+
+	<pre>
+	{{.TabOut}}
+	</pre>
+	{{end}}
   </body>
 </html>

@@ -1,6 +1,6 @@
 module ug-scraper-server
 
-go 1.21.5
+go 1.23
 
 require (
 	github.com/Pilfer/ultimate-guitar-scraper v0.0.0-20231127152243-80bee08c0060 // indirect
