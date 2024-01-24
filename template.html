@@ -1,13 +1,17 @@
 <html>
   <head>
+    {{if .TabOut}}
     <title>{{.SongName}} - {{.ArtistName}} @ UG Scraper</title>
+    {{else}}
+    <title>UG Scraper</title>
+    {{end}}
   </head>
 
   <body>
-	<input type="text" placeholder="Ultimate Guitar tab URL" size="50" value="{{.URL}}"></input>
+	<input id="url" type="text" placeholder="Ultimate Guitar tab URL" size="50" value="{{.URL}}"></input>
 	<button id="go">Go</button>
 
-	<div style="color: red">{{.Error}}</div>
+	<div id="error" style="color: red">{{.Error}}</div>
 
 	{{if .TabOut}}
 	<h1>{{.SongName}} - {{.ArtistName}}</h1>
@@ -16,5 +20,7 @@
 	{{.TabOut}}
 	</pre>
 	{{end}}
+
+    <script src="static/go.js"></script>
   </body>
 </html>

@@ -16,7 +16,7 @@ import (
 var tmpl = template.Must(template.ParseFiles("template.html"))
 
 func tabId(url string) (int64, error) {
-	invalidErr := errors.New("invalid UG URL")
+	invalidErr := errors.New("Invalid UG URL")
 
 	re := regexp.MustCompile("\\d+$")
 	match := re.FindString(url)
@@ -74,12 +74,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := tabId(path)
 	if err != nil {
-		data.Error = "Invalid UG URL"
+		data.Error = err.Error()
 		tmpl.Execute(w, data)
 		return
 	}
 
-	// url := "https://tabs.ultimate-guitar.com/tab/misc-traditional/the-parting-glass-chords-1147884"
 	data, err = fetchTab(id)
 	if err != nil || data.TabOut == "" {
 		data.Error = "Error fetching tab"
@@ -89,7 +88,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.HandleFunc("/", handler)
+
 	port := ":3000"
 	fmt.Printf("Running on http://localhost%v\n", port)
 	err := http.ListenAndServe(port, nil)
