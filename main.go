@@ -13,6 +13,8 @@ import (
 	"github.com/Pilfer/ultimate-guitar-scraper/pkg/ultimateguitar"
 )
 
+var tmpl = template.Must(template.ParseFiles("template.html"))
+
 func tabId(url string) (int64, error) {
 	invalidErr := errors.New("invalid UG URL")
 
@@ -62,7 +64,6 @@ func fetchTab(id int64) (TabOutput, error) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("template.html"))
 	data := TabOutput{}
 
 	path := r.URL.Path[len("/"):]
