@@ -9,5 +9,5 @@ document.querySelector('#go').addEventListener('click', (e) => {
 	}
 
     const tabId = match[1];
-    location = `/${tabId}`;
+    location = `/ugs/${tabId}`;
 });

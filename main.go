@@ -93,10 +93,10 @@ func main() {
 	flag.Parse()
 	port := fmt.Sprintf(":%v", *portInt)
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-	http.HandleFunc("/", handler)
+	http.Handle("/ugs/static/", http.StripPrefix("/ugs/static/", http.FileServer(http.Dir("./static"))))
+	http.HandleFunc("/ugs", handler)
 
-	fmt.Printf("Running on http://localhost%v\n", port)
+	fmt.Printf("Running on http://localhost%v/ugs\n", port)
 	err := http.ListenAndServe(port, nil)
 	if err != nil {
 		log.Fatal(err)
