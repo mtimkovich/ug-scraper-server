@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"html/template"
 	"log"
@@ -88,10 +89,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	portInt := flag.Int("port", 3000, "port to run on")
+	flag.Parse()
+	port := fmt.Sprintf(":%v", *portInt)
+
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.HandleFunc("/", handler)
 
-	port := ":3000"
 	fmt.Printf("Running on http://localhost%v\n", port)
 	err := http.ListenAndServe(port, nil)
 	if err != nil {
