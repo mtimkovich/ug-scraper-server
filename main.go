@@ -67,7 +67,7 @@ func fetchTab(id int64) (TabOutput, error) {
 func handler(w http.ResponseWriter, r *http.Request) {
 	data := TabOutput{}
 
-	path := r.URL.Path[len("/"):]
+	path := r.URL.Path[len("/ugs/"):]
 	if path == "" {
 		tmpl.Execute(w, data)
 		return
@@ -94,7 +94,7 @@ func main() {
 	port := fmt.Sprintf(":%v", *portInt)
 
 	http.Handle("/ugs/static/", http.StripPrefix("/ugs/static/", http.FileServer(http.Dir("./static"))))
-	http.HandleFunc("/ugs", handler)
+	http.HandleFunc("/ugs/", handler)
 
 	fmt.Printf("Running on http://localhost%v/ugs\n", port)
 	err := http.ListenAndServe(port, nil)
