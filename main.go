@@ -56,6 +56,10 @@ func fetchTab(id int64) (TabOutput, error) {
 	tabOut = strings.ReplaceAll(tabOut, "[ch]", "")
 	tabOut = strings.ReplaceAll(tabOut, "[/ch]", "")
 
+	if tabOut == "" {
+		return tabOutput, errors.New("Error fetching tab")
+	}
+
 	tabOutput.SongName = tab.SongName
 	tabOutput.ArtistName = tab.ArtistName
 	tabOutput.TabOut = tabOut
@@ -81,7 +85,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data, err = fetchTab(id)
-	if err != nil || data.TabOut == "" {
+	if err != nil {
 		data.Error = "Error fetching tab"
 	}
 

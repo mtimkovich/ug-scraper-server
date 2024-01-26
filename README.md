@@ -15,7 +15,7 @@ You can run your own instance by cloning the repo and
 ```
 $ go build -o ugs
 $ ./ugs
-Running on http://localhost:3000/ugs
+Running on http://localhost:3000/
 ```
 
 [ugnbs]: https://chromewebstore.google.com/detail/ultimate-guitar-no-bs/jmpkkadmknlnfhodidloffadbagededm
